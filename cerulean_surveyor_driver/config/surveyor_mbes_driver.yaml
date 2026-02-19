@@ -20,7 +20,9 @@ surveyor_mbes_driver:
       # TF frame ID attached to all published messages
       frame_id: "surveyor_link"
 
-      # Maximum sonar range in meters. Max range is 100m
+      auto_range: True
+
+      # If auto_range is False, then maximum sonar range in meters. Max range is 100m
       range: 100.0
       
       # Speed of sound (m/s) used in angle calculations. Default is 1500.0

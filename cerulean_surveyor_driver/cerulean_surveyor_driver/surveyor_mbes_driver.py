@@ -25,6 +25,7 @@ class Surveyor_MBES_Driver(Node):
 
         # Configuration parameters
         self.declare_parameter('configuration.frame_id',     Parameter.Type.STRING)
+        self.declare_parameter('configuration.auto_range',        Parameter.Type.BOOL)
         self.declare_parameter('configuration.range',        Parameter.Type.DOUBLE)
         self.declare_parameter('configuration.sound_speed',        Parameter.Type.DOUBLE)
 
@@ -37,9 +38,14 @@ class Surveyor_MBES_Driver(Node):
 
         # Get configuration parameters
         frame_id           = self.get_parameter('configuration.frame_id').value
-        range_m            = self.get_parameter('configuration.range').value
         sound_speed        = self.get_parameter('configuration.sound_speed').value
-        range_mm           = int(range_m * 1000)
+        auto_range         = self.get_parameter('configuration.auto_range').value
+        
+        if auto_range:
+            range_mm = -1
+        else:
+            range_m            = self.get_parameter('configuration.range').value
+            range_mm           = int(range_m * 1000)
         
         # ROS Stuff
         self.header = Header()
@@ -79,13 +85,14 @@ class Surveyor_MBES_Driver(Node):
             exit(1)
 
         else:
-            self.get_logger().info("Initialized Surveyor240")
-
             self.surveyor.control_set_ping_parameters(end_mm = int(range_mm),
                                                     ping_enable=True,
                                                     enable_yz_point_data=False,
                                                     enable_atof_data=True,
                                                     sos_mps=sound_speed)
+            
+            self.get_logger().info(f"Initialized Surveyor240 with {'auto_range' if range_mm == -1 else f'range={range_mm/1000} mm'}")
+            
             self.create_timer(0.0, self.run)
         
     def run(self):
