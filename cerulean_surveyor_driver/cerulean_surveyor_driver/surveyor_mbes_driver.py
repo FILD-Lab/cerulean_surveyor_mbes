@@ -102,10 +102,12 @@ class Surveyor_MBES_Driver(Node):
                                                 definitions.SURVEYOR240_WATER_STATS])
         except KeyboardInterrupt:
             return
-        self.header.stamp = self.get_clock().now().to_msg()
-        
+
         if data.message_id == definitions.SURVEYOR240_ATTITUDE_REPORT:
             vector = (data.up_vec_x, data.up_vec_y, data.up_vec_z)
+            utc_sec = data.utc_msec / 1000.0
+            self.header.stamp.sec = int(utc_sec)
+            self.header.stamp.nanosec = int((utc_sec % 1.0) * 1e9)
             pitch = math.asin(vector[0])
             roll = math.atan2(vector[1], vector[2])
 
@@ -163,7 +165,9 @@ class Surveyor_MBES_Driver(Node):
         if data.message_id == definitions.SURVEYOR240_ATOF_POINT_DATA:
             atof_list = Surveyor240.create_atof_list(data)
             n = len(atof_list)
-
+            ping_time_sec = data.utc_msec / 1000.0 + data.listening_sec
+            self.header.stamp.sec = int(ping_time_sec)
+            self.header.stamp.nanosec = int((ping_time_sec % 1.0) * 1e9)
             atof_msg = Float32MultiArrayStamped()
             atof_msg.header = self.header
             atof_msg.layout.dim = [
