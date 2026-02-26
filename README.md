@@ -33,6 +33,6 @@ ros2 launch cerulean_surveyor_driver surveyor_mbes_driver.launch.py
 | `surveyor/pointcloud` | `sensor_msgs/PointCloud2` | Beam returns converted to XYZ in the sensor frame. `x=0`, `y=distance·sin(angle)`, `z=−distance·cos(angle)` |
 
 ## Coordinate Frame
-![https://docs.ceruleansonar.com/c/surveyor-240-16/coordinate-frame](./cerulean_surveyor_interfaces/frame.avif)
+![https://docs.ceruleansonar.com/c/surveyor-240-16/coordinate-frame](./cerulean_surveyor_interfaces/frame.png)
 ## Acknowledgement
 This ROS2 package is built as a wrapper on top of the [example script](https://github.com/bluerobotics/ping-python/blob/master/examples/surveyor240Example.py) provided by BlueRobotics. We really appreciate their work.
