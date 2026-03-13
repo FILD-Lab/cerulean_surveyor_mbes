@@ -187,8 +187,8 @@ class Surveyor_MBES_Driver(Node):
             for p in atof_list:
                 r = 0.5 * sound_speed * p.tof
                 x = 0.0
-                y = r * math.sin(p.angle)
-                z = -r * math.cos(p.angle)
+                y = -r * math.sin(p.angle)
+                z = r * math.cos(p.angle)
                 cloud_data += struct.pack('<fff', x, y, z)
 
             self.pc_msg.header   = self.header
