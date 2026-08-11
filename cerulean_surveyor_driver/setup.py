@@ -22,6 +22,7 @@ setup(
     entry_points={
         'console_scripts': [
             'surveyor_mbes_driver = cerulean_surveyor_driver.surveyor_mbes_driver:main',
+            'surveyor_depth_node = cerulean_surveyor_driver.surveyor_depth_node:main',
         ],
     },
 )

@@ -95,6 +95,19 @@ class Surveyor_MBES_Driver(Node):
             
             self.create_timer(0.0, self.run)
         
+    # The Surveyor240 reports utc_msec as 0 (or, if its UTC time request to the
+    # host was never answered, an underflowed huge value) when it has no valid
+    # UTC reference. Fall back to the host clock rather than crash on an
+    # out-of-range stamp.
+    def _safe_stamp_seconds(self, seconds):
+        if -2147483648 <= seconds < 2147483648:
+            return seconds
+        self.get_logger().warn(
+            "Surveyor240 reported an invalid UTC time; falling back to host clock",
+            once=True)
+        now = self.get_clock().now().to_msg()
+        return now.sec + now.nanosec * 1e-9
+
     def run(self):
         try:
             data = self.surveyor.wait_message([definitions.SURVEYOR240_ATOF_POINT_DATA,
@@ -105,7 +118,7 @@ class Surveyor_MBES_Driver(Node):
 
         if data.message_id == definitions.SURVEYOR240_ATTITUDE_REPORT:
             vector = (data.up_vec_x, data.up_vec_y, data.up_vec_z)
-            utc_sec = data.utc_msec / 1000.0
+            utc_sec = self._safe_stamp_seconds(data.utc_msec / 1000.0)
             self.header.stamp.sec = int(utc_sec)
             self.header.stamp.nanosec = int((utc_sec % 1.0) * 1e9)
             pitch = math.asin(vector[0])
@@ -165,7 +178,7 @@ class Surveyor_MBES_Driver(Node):
         if data.message_id == definitions.SURVEYOR240_ATOF_POINT_DATA:
             atof_list = Surveyor240.create_atof_list(data)
             n = len(atof_list)
-            ping_time_sec = data.utc_msec / 1000.0 + data.listening_sec
+            ping_time_sec = self._safe_stamp_seconds(data.utc_msec / 1000.0 + data.listening_sec)
             self.header.stamp.sec = int(ping_time_sec)
             self.header.stamp.nanosec = int((ping_time_sec % 1.0) * 1e9)
             atof_msg = Float32MultiArrayStamped()

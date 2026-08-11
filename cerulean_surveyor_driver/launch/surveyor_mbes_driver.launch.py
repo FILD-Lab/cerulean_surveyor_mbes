@@ -18,5 +18,11 @@ def generate_launch_description():
             name='surveyor_mbes_driver',
             output='screen',
             parameters=[config]
+        ),
+        Node(
+            package='cerulean_surveyor_driver',
+            executable='surveyor_depth_node',
+            name='surveyor_depth_node',
+            output='screen',
         )
     ])

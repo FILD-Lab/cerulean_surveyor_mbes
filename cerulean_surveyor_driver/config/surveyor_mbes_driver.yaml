@@ -1,4 +1,4 @@
-surveyor_mbes_driver:
+/**:
   ros__parameters:
     interface:
       # Connection method: "serial" for USB/serial, "udp" for ethernet
@@ -11,14 +11,14 @@ surveyor_mbes_driver:
       baudrate: 115200
 
       # IP address of the Surveyor240 (used when connection_type is "udp")
-      udp_address: "192.168.2.122"
+      udp_address: "192.168.1.45"
 
       # UDP port of the Surveyor240 (used when connection_type is "udp")
       udp_port: 62312
 
     configuration:
       # TF frame ID attached to all published messages
-      frame_id: "surveyor_link"
+      frame_id: "fildlab_asv_1/surveyor_link"
 
       auto_range: True
 
